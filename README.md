@@ -250,3 +250,4 @@ class ActorCritic(nn.Module):
             nn.Linear(64, 1)
         )
 ```
+![RL Agent in Action](episode_moving_obs_1.gif)

@@ -199,7 +199,22 @@ class PPO:
                 state, reward, done, _, _ = test_env.step(action)
                 total_reward += reward
             print(f"Test Episode {episode + 1}: Reward = {total_reward}")    
-
+    
+    def record(self, checkpoint_path, episodes = 3):
+        self.load(checkpoint_path)
+        record_env = gym.make("MovingObstaclesGrid-v0", num_obstacles = 3, nrow = 5, ncol= 5, render_mode='rgb_array')
+        record_env = gym.wrappers.RecordVideo(record_env, video_folder="videos", episode_trigger=lambda x: True, name_prefix= "MovingObstacles")
+        for episode in range(episodes):
+            state = record_env.reset(options = options)[0]
+            total_reward = 0
+            done = False
+            while not done:
+                action = self.select_action(state)
+                state, reward, done, _, _ = record_env.step(action)
+                total_reward += reward
+            print(f"Test Episode {episode + 1}: Reward = {total_reward}")
+        record_env.close()
+  
 
 
 if __name__ == "__main__":
@@ -217,3 +232,5 @@ if __name__ == "__main__":
         ppo.plot_train()
     elif args.mode == "test":
         ppo.test("Autonomous_Projects/maze.pth")
+    elif args.mode == "record":
+        ppo.record("Autonomous_Projects/maze.pth")
